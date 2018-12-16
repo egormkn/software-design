@@ -14,9 +14,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GetProductsServletTest {
+
     @BeforeAll
     static void init() {
         execute("DROP TABLE PRODUCT");
@@ -53,8 +54,13 @@ class GetProductsServletTest {
         new GetProductsServlet().doGet(request, response);
 
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Product1\t100"));
-        assertTrue(stringWriter.toString().contains("Product2\t200"));
-        assertTrue(stringWriter.toString().contains("Product3\t300"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Product1"));
+        assertTrue(result.contains("100"));
+        assertTrue(result.contains("Product2"));
+        assertTrue(result.contains("200"));
+        assertTrue(result.contains("Product3"));
+        assertTrue(result.contains("300"));
     }
 }

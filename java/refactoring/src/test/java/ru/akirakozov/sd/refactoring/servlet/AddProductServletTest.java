@@ -1,6 +1,5 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,9 +14,10 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AddProductServletTest {
+
     @BeforeAll
     static void init() {
         execute("DROP TABLE PRODUCT");
@@ -59,25 +59,33 @@ class AddProductServletTest {
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("name");
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("price");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("OK"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("OK"));
+
+        check();
     }
 
-    @AfterAll
-    static void check() throws IOException {
+    private void check() throws IOException {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-
-        Mockito.when(request.getParameter("command")).thenReturn("count");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         Mockito.when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new GetProductsServlet().doGet(request, response);
 
-        Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Number of products"));
-        assertTrue(stringWriter.toString().contains("4"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Product1"));
+        assertTrue(result.contains("100"));
+        assertTrue(result.contains("Product2"));
+        assertTrue(result.contains("200"));
+        assertTrue(result.contains("Product3"));
+        assertTrue(result.contains("300"));
+        assertTrue(result.contains("Product4"));
+        assertTrue(result.contains("400"));
     }
 }

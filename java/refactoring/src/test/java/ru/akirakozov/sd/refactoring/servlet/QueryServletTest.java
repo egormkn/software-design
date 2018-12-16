@@ -58,8 +58,11 @@ class QueryServletTest {
 
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Product with max price"));
-        assertTrue(stringWriter.toString().contains("Product3\t300"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Product with max price"));
+        assertTrue(result.contains("Product3"));
+        assertTrue(result.contains("300"));
     }
 
 
@@ -78,8 +81,11 @@ class QueryServletTest {
 
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Product with min price"));
-        assertTrue(stringWriter.toString().contains("Product1\t100"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Product with min price"));
+        assertTrue(result.contains("Product1"));
+        assertTrue(result.contains("100"));
     }
 
     @Test
@@ -97,8 +103,10 @@ class QueryServletTest {
 
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Summary price"));
-        assertTrue(stringWriter.toString().contains("600"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Summary price"));
+        assertTrue(result.contains("600"));
     }
 
     @Test
@@ -116,8 +124,10 @@ class QueryServletTest {
 
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Number of products"));
-        assertTrue(stringWriter.toString().contains("3"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Number of products"));
+        assertTrue(result.contains("3"));
     }
 
     @Test
@@ -126,7 +136,7 @@ class QueryServletTest {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
 
-        Mockito.when(request.getParameter("command")).thenReturn("unknown");
+        Mockito.when(request.getParameter("command")).thenReturn("abcde");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -136,6 +146,9 @@ class QueryServletTest {
 
         Mockito.verify(request, Mockito.atLeastOnce()).getParameter("command");
         writer.flush(); // it may not have been flushed yet...
-        assertTrue(stringWriter.toString().contains("Unknown command: unknown"));
+
+        String result = stringWriter.toString();
+        assertTrue(result.contains("Unknown command"));
+        assertTrue(result.contains("abcde"));
     }
 }
